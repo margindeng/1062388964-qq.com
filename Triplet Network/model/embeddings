@@ -1,0 +1,21 @@
+train = pd.read_csv("../input/train.csv")  # Train shape = (1306122, 3)
+test = pd.read_csv("../input/test.csv")  # Test shape = (56370, 2)
+df = pd.concat([train ,test])  # shape=(1362492, 2)
+
+def build_vocab(sentences, verbose =  True):
+    """
+    :param sentences: list of list of words 输入是训练集与测试集的数据
+    :return: dictionary of words and their count
+    追踪训练词汇表，遍历所有文本对单词进行计数
+    """
+    vocab = {}
+    for sentence in tqdm(sentences, disable = (not verbose)):
+        for word in sentence:
+            try:
+                vocab[word] += 1
+            except KeyError:
+                vocab[word] = 1
+    return vocab
+
+sentences =df['question_text'].progress_apply(lambda x: x.split()).values
+vocab = build_vocab(sentences)   # vocab_size=508823
